@@ -289,7 +289,7 @@ gst_bus_finalize (GObject * object)
   GstBus *bus = GST_BUS (object);
 
   if (bus->priv->sync_handler)
-    sync_handler_unref (g_steal_pointer (&bus->priv->sync_handler));
+    sync_handler_unref (bus->priv->sync_handler);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -764,8 +764,8 @@ gst_bus_set_sync_handler (GstBus * bus, GstBusSyncHandler func,
   }
 
   GST_OBJECT_LOCK (bus);
-  old_handler = g_steal_pointer (&bus->priv->sync_handler);
-  bus->priv->sync_handler = g_steal_pointer (&new_handler);
+  old_handler = bus->priv->sync_handler;
+  bus->priv->sync_handler = new_handler;
   GST_OBJECT_UNLOCK (bus);
 
   g_clear_pointer (&old_handler, sync_handler_unref);
